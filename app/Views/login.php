@@ -14,7 +14,7 @@
         <?php endif; ?>
 
         <form method="POST" action="<?= base_url('/login'); ?>">
-            <?= csrf_field(); ?> <!-- Tambahkan CSRF Protection -->
+            <?= csrf_field(); ?>
             <div class="mb-3">
                 <label class="form-label fw-bold">Username</label>
                 <input type="text" name="username" class="form-control" 

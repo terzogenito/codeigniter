@@ -16,35 +16,26 @@ class Auth extends Controller {
     public function login() {
         helper(['form', 'url', 'cookie']);
         session();
-
         if ($this->request->getMethod() === 'POST') {
             $username = $this->request->getPost('username');
             $password = $this->request->getPost('password');
-
-            // Ambil data dari JSON
-            $users = json_decode(file_get_contents($this->userFile), true);
-
-            // Cek apakah username ada di JSON
+            if (!file_exists($this->userFile)) {
+                file_put_contents($this->userFile, json_encode([]));
+                return redirect()->to('/login')->with('error', 'Users data has been created.');
+            }
+            $users = json_decode(file_get_contents($this->userFile), true) ?? [];
             foreach ($users as $user) {
                 if ($user['username'] === $username && password_verify($password, $user['password'])) {
-                    // Set session
                     session()->set([
                         'username' => $username,
                         'logged_in' => true
                     ]);
-
-                    // Set cookie (opsional)
                     set_cookie('username', $username, 86400 * 30);
-
-                    // Redirect ke dashboard
                     return redirect()->to('/dashboard');
                 }
             }
-
-            // Jika gagal login
             return redirect()->to('/login')->with('error', 'Username atau password salah.');
         }
-
         return view('login');
     }
 
@@ -87,11 +78,9 @@ class Auth extends Controller {
     }
 
     public function logout() {
-        helper('cookie'); // Tambahkan ini untuk memastikan delete_cookie() tersedia
-
+        helper('cookie');
         session()->destroy();
         delete_cookie('username');
-
         return redirect()->to('/login');
     }
 

@@ -1,12 +1,12 @@
 <?php
-// Pastikan session aktif
+
 if (!session()->get('logged_in')) {
-    return redirect()->to('/login')->send(); // Gunakan ->send() agar redirect langsung dieksekusi
+    return redirect()->to('/login')->send();
     exit();
 }
 
-// Ambil username dari session atau cookie
 $username = session()->get('username') ?? get_cookie('username');
+
 ?>
 
 <?= $this->extend('base') ?>
